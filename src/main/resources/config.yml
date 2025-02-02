@@ -1,0 +1,5 @@
+Prefix: "§dSky X §9Network §bINVITE §8●⏺ "
+On-Validation:
+  command:
+    - "say %player% You have been rewarded!"
+    - "give %player% minecraft:mystery_box 1"
