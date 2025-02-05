@@ -62,19 +62,26 @@ public class AdvancedInvitePlaceholder extends PlaceholderExpansion {
     }
 
     private List<Map.Entry<String, Integer>> getSortedLeaderboard(FileConfiguration statsConfig) {
-        Map<String, Object> leadboardData = statsConfig.getConfigurationSection("Leadboard").getValues(false);
+        if (statsConfig.getConfigurationSection("Leadboard") == null) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Object> leaderboardData = statsConfig.getConfigurationSection("Leadboard").getValues(false);
         List<Map.Entry<String, Integer>> leaderboard = new ArrayList<>();
 
-        for (Map.Entry<String, Object> entry : leadboardData.entrySet()) {
+        for (Map.Entry<String, Object> entry : leaderboardData.entrySet()) {
             if (entry.getValue() instanceof Map) {
                 Map<?, ?> data = (Map<?, ?>) entry.getValue();
                 if (data.containsKey("invites")) {
-                    leaderboard.add(Map.entry(entry.getKey(), (Integer) data.get("invites")));
+                    Object invites = data.get("invites");
+                    if (invites instanceof Integer) {
+                        leaderboard.add(Map.entry(entry.getKey(), (Integer) invites));
+                    }
                 }
             }
         }
 
-        leaderboard.sort((a, b) -> Integer.compare(b.getValue(), a.getValue())); // Trier en ordre décroissant
+        leaderboard.sort((a, b) -> Integer.compare(b.getValue(), a.getValue())); // Tri décroissant
         return leaderboard;
     }
 }
