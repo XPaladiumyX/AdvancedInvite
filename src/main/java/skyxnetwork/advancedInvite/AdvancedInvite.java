@@ -1,6 +1,7 @@
 package skyxnetwork.advancedInvite;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -127,9 +128,47 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
             if (inviter != null && inviter.isOnline()) {
                 inviter.sendMessage("§a" + confirmer.getName() + " has confirmed your invitation. You have " + invites + " invites.");
             }
+
+            // 🎁 Donner des récompenses aux deux joueurs
+            giveRewards(confirmer, inviter, invites);
+
             saveStats();
         } else {
             confirmer.sendMessage("§cNo pending invitation from " + inviterName + ".");
+        }
+    }
+    
+    private void giveRewards(Player confirmer, Player inviter, int invites) {
+        FileConfiguration config = getConfig();
+
+        // Récompenses pour le confirmeur
+        List<String> confirmerCommands = config.getStringList("command.Confirmer");
+        for (String command : confirmerCommands) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", confirmer.getName()));
+        }
+
+        // Récompenses pour l'inviteur
+        if (inviter != null) {
+            List<String> inviterCommands = config.getStringList("command.Inviter");
+            for (String command : inviterCommands) {
+                command = command.replace("%player%", inviter.getName())
+                        .replace("%Confirmer%", confirmer.getName())
+                        .replace("%invites%", String.valueOf(invites));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+            }
+        }
+
+        // 🔊 Jouer les sons si activé
+        if (config.getBoolean("sounds.enabled")) {
+            String soundReward = config.getString("sounds.on-reward");
+            String soundConfirm = config.getString("sounds.on-confirm");
+
+            if (soundReward != null && !soundReward.isEmpty()) {
+                inviter.playSound(inviter.getLocation(), Sound.valueOf(soundReward.toUpperCase()), 1.0f, 1.0f);
+            }
+            if (soundConfirm != null && !soundConfirm.isEmpty()) {
+                confirmer.playSound(confirmer.getLocation(), Sound.valueOf(soundConfirm.toUpperCase()), 1.0f, 1.0f);
+            }
         }
     }
 }
