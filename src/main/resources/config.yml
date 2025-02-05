@@ -1,7 +1,7 @@
 sounds:
   enabled: true
-  on-reward: "minecraft:entity.item.pickup"
-  on-confirm: "minecraft:entity.item.pickup"
+  on-reward: "ENTITY_ITEM_PICKUP"
+  on-confirm: "ENTITY_ITEM_PICKUP"
 
 command:
   Confirmer:
