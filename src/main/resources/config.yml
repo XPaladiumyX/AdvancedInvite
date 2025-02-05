@@ -1,7 +1,7 @@
 sounds:
   enabled: true
   on-reward: "ENTITY_ITEM_PICKUP"
-  on-confirm: "ENTITY_ITEM_PICKUP"
+  on-confirm: "ENTITY_PLAYER_LEVELUP"
 
 command:
   Confirmer:
