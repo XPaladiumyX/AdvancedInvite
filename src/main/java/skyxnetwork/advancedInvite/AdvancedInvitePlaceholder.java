@@ -4,9 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AdvancedInvitePlaceholder extends PlaceholderExpansion {
 
@@ -62,26 +60,16 @@ public class AdvancedInvitePlaceholder extends PlaceholderExpansion {
     }
 
     private List<Map.Entry<String, Integer>> getSortedLeaderboard(FileConfiguration statsConfig) {
-        if (statsConfig.getConfigurationSection("Leadboard") == null) {
-            return new ArrayList<>();
-        }
-
-        Map<String, Object> leaderboardData = statsConfig.getConfigurationSection("Leadboard").getValues(false);
         List<Map.Entry<String, Integer>> leaderboard = new ArrayList<>();
 
-        for (Map.Entry<String, Object> entry : leaderboardData.entrySet()) {
-            if (entry.getValue() instanceof Map) {
-                Map<?, ?> data = (Map<?, ?>) entry.getValue();
-                if (data.containsKey("invites")) {
-                    Object invites = data.get("invites");
-                    if (invites instanceof Integer) {
-                        leaderboard.add(Map.entry(entry.getKey(), (Integer) invites));
-                    }
-                }
+        if (statsConfig.getConfigurationSection("Leadboard") != null) {
+            for (String playerName : statsConfig.getConfigurationSection("Leadboard").getKeys(false)) {
+                int invites = statsConfig.getInt("Leadboard." + playerName + ".invites", 0);
+                leaderboard.add(new AbstractMap.SimpleEntry<>(playerName, invites));
             }
         }
 
-        leaderboard.sort((a, b) -> Integer.compare(b.getValue(), a.getValue())); // Tri décroissant
+        leaderboard.sort(Comparator.comparingInt(Map.Entry<String, Integer>::getValue).reversed());
         return leaderboard;
     }
 }
