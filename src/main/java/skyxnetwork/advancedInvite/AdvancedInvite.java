@@ -74,7 +74,39 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
             handleConfirm((Player) sender, args);
             return true;
         }
+        if (command.getName().equalsIgnoreCase("cancelinvite") && sender instanceof Player) {
+            handleCancelInvite((Player) sender, args);
+            return true;
+        }
         return false;
+    }
+
+    private void handleCancelInvite(Player inviter, String[] args) {
+        if (args.length != 1) {
+            inviter.sendMessage("§cUsage: /cancelinvite <player>");
+            return;
+        }
+
+        String inviteeName = args[0];
+        List<String> pendingInvites = statsConfig.getStringList("Pending." + inviter.getName());
+
+        if (pendingInvites.contains(inviteeName)) {
+            pendingInvites.remove(inviteeName);
+            statsConfig.set("Pending." + inviter.getName(), pendingInvites);
+            saveStats();
+
+            inviter.sendMessage("§aYou have canceled the invitation for " + inviteeName + ".");
+
+            OfflinePlayer invitee = Bukkit.getOfflinePlayer(inviteeName);
+            if (invitee.isOnline()) {
+                Player onlineInvitee = invitee.getPlayer();
+                if (onlineInvitee != null) {
+                    onlineInvitee.sendMessage("§cYour pending invitation from " + inviter.getName() + " has been canceled.");
+                }
+            }
+        } else {
+            inviter.sendMessage("§cNo pending invitation found for " + inviteeName + ".");
+        }
     }
 
     private void handleInvite(Player inviter, String[] args) {
