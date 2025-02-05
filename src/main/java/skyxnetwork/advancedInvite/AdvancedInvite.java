@@ -1,13 +1,16 @@
 package skyxnetwork.advancedInvite;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -79,9 +82,12 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
             inviter.sendMessage("§cUsage: /invite <player>");
             return;
         }
-        Player invitee = Bukkit.getPlayer(args[0]);
-        if (invitee == null || !invitee.isOnline()) {
-            inviter.sendMessage("§cPlayer not found or offline.");
+
+        OfflinePlayer invitee = Bukkit.getOfflinePlayer(args[0]);
+
+        // Vérifie si le joueur a déjà rejoint le serveur
+        if (!invitee.hasPlayedBefore() && !invitee.isOnline()) {
+            inviter.sendMessage("§cThis player has never joined the server or doesn't exist.");
             return;
         }
 
@@ -90,7 +96,14 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
             pendingInvites.add(invitee.getName());
             statsConfig.set("Pending." + inviter.getName(), pendingInvites);
             inviter.sendMessage("§aYou invited " + invitee.getName() + ".");
-            invitee.sendMessage("§e" + inviter.getName() + " invited you. Use /confirm " + inviter.getName() + " to confirm.");
+
+            if (invitee.isOnline()) {
+                Player onlineInvitee = invitee.getPlayer();
+                if (onlineInvitee != null) {
+                    onlineInvitee.sendMessage("§e" + inviter.getName() + " invited you. Use /confirm " + inviter.getName() + " to confirm.");
+                }
+            }
+
             saveStats();
         } else {
             inviter.sendMessage("§cYou have already invited this player.");
@@ -173,6 +186,22 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
                 player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
             } catch (IllegalArgumentException e) {
                 getLogger().warning("Invalid sound in config: " + soundName);
+            }
+        }
+    }
+
+    // 🚀 Rappel des invitations en attente lors de la connexion
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        String playerName = player.getName();
+
+        for (Object inviterName : statsConfig.getConfigurationSection("Pending") != null
+                ? statsConfig.getConfigurationSection("Pending").getKeys(false)
+                : List.of()) {
+            List<String> pendingInvites = statsConfig.getStringList("Pending." + inviterName);
+            if (pendingInvites.contains(playerName)) {
+                player.sendMessage("§eYou have a pending invitation from " + inviterName + ". Use /confirm " + inviterName + " to confirm.");
             }
         }
     }
