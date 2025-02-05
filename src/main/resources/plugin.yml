@@ -16,11 +16,11 @@ commands:
     permission: advancedinvite.confirm
     aliases: [ cfm ]  # Optionnel, raccourci pour /confirm
 
-    cancelinvite:
-      description: Cancel a pending invitation sent to a player.
-      usage: /cancelinvite <player>
-      permission: advancedinvite.cancel
-      aliases: [ cancelinv ]
+  cancelinvite:
+    description: Cancel a pending invitation sent to a player.
+    usage: /cancelinvite <player>
+    permission: advancedinvite.cancel
+    aliases: [ cancelinv ]
 permissions:
   advancedinvite.*:
     description: Gives access to all AdvancedInvite commands.
@@ -36,7 +36,7 @@ permissions:
   advancedinvite.confirm:
     description: Allows the player to confirm invitations.
     default: true
-      
+
   advancedinvite.cancel:
     description: Allows the player to cancel pending invitations.
     default: true
