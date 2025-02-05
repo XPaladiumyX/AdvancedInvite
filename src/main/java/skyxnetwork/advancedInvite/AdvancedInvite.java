@@ -196,13 +196,16 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         String playerName = player.getName();
 
-        for (Object inviterName : statsConfig.getConfigurationSection("Pending") != null
-                ? statsConfig.getConfigurationSection("Pending").getKeys(false)
-                : List.of()) {
-            List<String> pendingInvites = statsConfig.getStringList("Pending." + inviterName);
-            if (pendingInvites.contains(playerName)) {
-                player.sendMessage("§eYou have a pending invitation from " + inviterName + ". Use /confirm " + inviterName + " to confirm.");
+        // Planifie le rappel 10 secondes après la connexion (200 ticks)
+        Bukkit.getScheduler().runTaskLater(this, () -> {
+            for (Object inviterName : statsConfig.getConfigurationSection("Pending") != null
+                    ? statsConfig.getConfigurationSection("Pending").getKeys(false)
+                    : List.of()) {
+                List<String> pendingInvites = statsConfig.getStringList("Pending." + inviterName);
+                if (pendingInvites.contains(playerName)) {
+                    player.sendMessage("§eYou have a pending invitation from " + inviterName + ". Use /confirm " + inviterName + " to confirm.");
+                }
             }
-        }
+        }, 200L); // 200 ticks = 10 secondes
     }
 }
