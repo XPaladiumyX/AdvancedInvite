@@ -6,7 +6,7 @@
 
     <groupId>skyxnetwork</groupId>
     <artifactId>AdvancedInvite</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-FINAL</version>
     <packaging>jar</packaging>
 
     <name>AdvancedInvite</name>
