@@ -137,7 +137,7 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
             confirmer.sendMessage("§cNo pending invitation from " + inviterName + ".");
         }
     }
-    
+
     private void giveRewards(Player confirmer, Player inviter, int invites) {
         FileConfiguration config = getConfig();
 
@@ -160,14 +160,19 @@ public final class AdvancedInvite extends JavaPlugin implements Listener {
 
         // 🔊 Jouer les sons si activé
         if (config.getBoolean("sounds.enabled")) {
-            String soundReward = config.getString("sounds.on-reward");
-            String soundConfirm = config.getString("sounds.on-confirm");
+            playSoundSafely(inviter, config.getString("sounds.on-reward"));
+            playSoundSafely(confirmer, config.getString("sounds.on-confirm"));
+        }
+    }
 
-            if (soundReward != null && !soundReward.isEmpty()) {
-                inviter.playSound(inviter.getLocation(), Sound.valueOf(soundReward.toUpperCase()), 1.0f, 1.0f);
-            }
-            if (soundConfirm != null && !soundConfirm.isEmpty()) {
-                confirmer.playSound(confirmer.getLocation(), Sound.valueOf(soundConfirm.toUpperCase()), 1.0f, 1.0f);
+    // ✅ Sécurisation de la lecture des sons
+    private void playSoundSafely(Player player, String soundName) {
+        if (player != null && soundName != null && !soundName.isEmpty()) {
+            try {
+                Sound sound = Sound.valueOf(soundName.toUpperCase());
+                player.playSound(player.getLocation(), sound, 1.0f, 1.0f);
+            } catch (IllegalArgumentException e) {
+                getLogger().warning("Invalid sound in config: " + soundName);
             }
         }
     }
