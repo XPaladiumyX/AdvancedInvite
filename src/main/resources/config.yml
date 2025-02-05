@@ -1,5 +1,12 @@
-Prefix: "§dSky X §9Network §bINVITE §8●⏺ "
-On-Validation:
-  command:
-    - "say %player% You have been rewarded!"
-    - "give %player% minecraft:mystery_box 1"
+sounds:
+  enabled: true
+  on-reward: "minecraft:entity.item.pickup"
+  on-confirm: "minecraft:entity.item.pickup"
+
+command:
+  Confirmer:
+    - 'givemysterybox %player% epic_box'
+    - 'tell %player% Your confirmation has been received, You have been rewarded!'
+  Inviter:
+    - 'givemysterybox %player% epic_box'
+    - 'tell %player% %Confirmer% has confirmed your invitation. You have been rewarded! Invites: %invites% Position: %position%'

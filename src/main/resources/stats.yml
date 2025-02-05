@@ -1,0 +1,38 @@
+Leadboard:
+  iiXPaladiumyXii:
+    invites: 6
+    position: 2
+    pending-invites: 1
+  Rogue_Yan:
+    invites: 2
+    position: 8
+    pending-invites: 9
+  xMiqaGHG:
+    invites: 1
+    position: 458
+    pending-invites: 0
+  AnotherPlayer:
+    invites: 58
+    position: 1
+    pending-invites: 18
+
+Pending:
+  iiXPaladiumyXii:
+    - MinerPro101
+  Rogue_Yan:
+    - MinerPro101
+    - DaffiestChip0
+    - SkyXNetwork
+    - YFanimates
+    - AnotherPlayer
+    - Another
+    - Another
+    - Another
+    - Another
+
+UsedIPs:
+  iiXPaladiumyXii:
+    - 192.168.1.100
+  Rogue_Yan:
+    - 192.168.1.101
+    - 192.168.1.102
