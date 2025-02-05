@@ -2,10 +2,31 @@ name: AdvancedInvite
 version: '1.1-SNAPSHOT'
 main: skyxnetwork.advancedInvite.AdvancedInvite
 api-version: '1.20'
+depend: [ PlaceholderAPI ]
 commands:
   invite:
-    description: Invite un ami sur le serveur
-    usage: /invite <pseudo>
+    description: Invite a player to confirm your invitation.
+    usage: /invite <player>
+    permission: advancedinvite.invite
+    aliases: [ inv ]  # Optionnel, raccourci pour /invite
+
   confirm:
-    description: Confirme une invitation reçue
-    usage: /confirm <pseudo>
+    description: Confirm an invitation from another player.
+    usage: /confirm <inviter>
+    permission: advancedinvite.confirm
+    aliases: [ cfm ]  # Optionnel, raccourci pour /confirm
+permissions:
+  advancedinvite.*:
+    description: Gives access to all AdvancedInvite commands.
+    default: op
+    children:
+      advancedinvite.invite: true
+      advancedinvite.confirm: true
+
+  advancedinvite.invite:
+    description: Allows the player to send invitations.
+    default: true
+
+  advancedinvite.confirm:
+    description: Allows the player to confirm invitations.
+    default: true
